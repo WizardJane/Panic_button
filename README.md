@@ -1,2 +1,2 @@
-# Punic_button
+# Panic_button
 Практикум цифрового производства
