@@ -1,6 +1,7 @@
 #include <driver/i2s.h>
 #include <SPIFFS.h>
-
+#include <WiFi.h> //подключаем библиотеку для работы с WiFi
+#include <PubSubClient.h> // подключаем библиотеку для работы с MQTT
 
 #define I2S_WS 25
 #define I2S_SD 33
@@ -9,9 +10,12 @@
 #define I2S_SAMPLE_RATE   (16000)
 #define I2S_SAMPLE_BITS   (16)
 #define I2S_READ_LEN      (16 * 1024)
-#define RECORD_TIME       (20) //Seconds
+#define RECORD_TIME       (10) //Seconds
 #define I2S_CHANNEL_NUM   (1)
 #define FLASH_RECORD_SIZE (I2S_CHANNEL_NUM * I2S_SAMPLE_RATE * I2S_SAMPLE_BITS / 8 * RECORD_TIME)
+
+const char* ssid = "Android";
+const char* password = "sirius123";
 
 File file;
 const char filename[] = "/recording.wav";
@@ -23,8 +27,164 @@ const int buttonPin = 21;  // the number of the pushbutton pin
 int buttonState = 0;  // variable for reading the pushbutton status
 bool recording_available = true; //можно ли начать запись
 
+const char* mqtt_server = "10.127.251.120";
+const char* mqttUsr = "miptfab";
+const char* mqttPass = "miptfab2025";
+
+WiFiClient espClient; 
+PubSubClient client(espClient);
+long lastMsg = 0;
+char msg[50];
+int value = 0;
+String inmsg = "";
+int BUILTIN_LED = 2;
+String geoposition = "179.179 179.179";
+
+
+
+void send_geoposition_and_audio() {
+    // sendData("/miptfab/esp32led/geoposition/", geoposition);
+    // sendData("/miptfab/esp32led/audio/", "start");
+    // sendData("/miptfab/esp32led/ledState/", "sent");
+    Serial.print("sent");
+
+    // byte audio[311340];
+    if (!SPIFFS.begin(true)) {
+      Serial.println("SPIFFS initialisation failed!");
+      return;
+    }
+
+    file = SPIFFS.open(filename, "r");
+    if (!file) {
+      Serial.println("File is not available!");
+    }
+    //Serial.print("New file");
+    int cnt = 0;
+    byte* audio = new byte[311340];
+    // byte audio[311340];
+    while (file.available()) {
+      byte b = file.read();
+      audio[cnt] = b;
+      Serial.print(b, HEX);
+
+      cnt++;
+    }
+    Serial.println('cnt');
+    Serial.print(cnt);
+
+    file.close();
+    unsigned int len = 311340;
+    client.publish("/miptfab/esp32led/audio/", audio, len);
+    delete[] audio;
+
+    recording_available = true;
+}
+
+
+
+void setup_wifi() {
+  delay(10);
+  Serial.println();
+  Serial.print("Connecting to ");
+  Serial.println(ssid);
+
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.println("");
+  Serial.println("WiFi connected");
+  Serial.println("IP address: ");
+  Serial.println(WiFi.localIP());
+}
+
+void callback(char* topic, byte* payload, unsigned int length) {
+  inmsg = "";
+  // Serial.print("Message arrived [");
+  // Serial.print(topic);
+  // Serial.print("] ");
+  for (int i = 0; i < length; i++) {
+    inmsg += (char)payload[i];
+    // Serial.print((char)payload[i]);
+  }
+  // Serial.println(inmsg);
+  // Serial.println("from topic: " + inmsg);
+
+  if ((String)inmsg.c_str() == "off") {
+    digitalWrite(BUILTIN_LED, LOW);  // выключаем светодиод
+    Serial.println(inmsg.c_str());
+    sendData("/miptfab/esp32led/ledState/", "OFF"); // отправляем состояние светодиода
+  } else {
+    digitalWrite(BUILTIN_LED, HIGH); // включаем светодиод
+    Serial.println(inmsg.c_str());
+    sendData("/miptfab/esp32led/ledState/", "ON"); // отправляем состояние светодиода
+  }
+}
+
+void reconnect() {
+  while (!client.connected()) {
+    Serial.print("Attempting MQTT connection...");
+    String clientId = "esp32testClient-";
+    clientId += String(random(0xffff), HEX);
+    // пытаемся подключиться к брокеру MQTT
+    if (client.connect(clientId.c_str(), mqttUsr, mqttPass)) {
+      Serial.println("connected");
+      // Как только подключились, сообщаем эту прекрасную весть...
+      client.publish("/miptfab/esp32led/ledState/", "connected_ledState");
+      client.publish("/miptfab/esp32led/audio/", "connected_audio");
+      client.publish("/miptfab/esp32led/geoposition/", "connected_geoposition");
+      // ... ну и переподписываемся на нужный топик
+      client.subscribe("/miptfab/esp32led/ledControl/");
+      // client.subscribe("/miptfab/esp32led/audio/");
+      // client.subscribe("/miptfab/esp32led/geoposition/");
+
+    } else {
+      Serial.print("failed, rc=");
+      Serial.print(client.state());
+      Serial.println(" try again in 5 seconds");
+      // Ждём 5 секунд перед следующей попыткой подключиться к брокеру MQTT
+      delay(5000);
+    }
+  }
+}
+
+bool connectionUp(String paramOne) {
+  String msgj = paramOne;
+  if (!client.connected()) {
+    reconnect();
+  } else {
+    client.publish("/miptfab/esp32led/ledState/", msgj.c_str());
+
+     Serial.println(msgj.c_str());
+  }
+  return true;
+}
+
+
+bool sendData(String topic, String data) {
+  // String msgj = paramOne;
+  if (!client.connected()) {
+    reconnect();
+  } else {
+    client.publish(topic.c_str(), data.c_str());
+//     Serial.println(topic + " " + data);
+  }
+  return true;
+}
 void setup() {
   Serial.begin(115200);
+  pinMode(BUILTIN_LED, OUTPUT);
+
+  setup_wifi();
+  client.setServer(mqtt_server, 1883);
+  client.setCallback(callback);
+  digitalWrite(BUILTIN_LED, HIGH);
+  delay(3000);
+  digitalWrite(BUILTIN_LED, LOW);
+  reconnect();
+
   SPIFFSInit();
   i2sInit();
   // initialize the pushbutton pin as an input:
@@ -32,15 +192,6 @@ void setup() {
 
   
 }
-
-int foo()
- {
-  
-  //xTaskCreate(i2s_adc, "i2s_adc", 1024 * 2, NULL, 0, NULL);
-  delay(5000);
-  //recording_available = true;
-  return 0;
- }
 
 void loop() {
   // Serial.println(buttonState);
@@ -62,13 +213,37 @@ void loop() {
         // Serial.print("buttonState ");
         // Serial.println(buttonState);
         //int a = foo();
-        xTaskCreate(i2s_adc, "i2s_adc", 1024 * 2, NULL, 0, NULL);
+        i2s_adc();
       }
     } 
   }
   
 
 }
+
+// void print_file() {
+//   if (!SPIFFS.begin(true)) {
+//     Serial.println("SPIFFS initialisation failed!");
+//     return;
+//   }
+
+//   file = SPIFFS.open(filename, "r");
+//   if (!file) {
+//     Serial.println("File is not available!");
+//   }
+//   //Serial.print("New file");
+//   int cnt = 0;
+//   while (file.available()) {
+//     cnt++;
+//     byte b = file.read();
+//     Serial.print(b, HEX);
+//   }
+//   Serial.println('cnt');
+//   Serial.print(cnt);
+
+//   file.close();
+  
+// }
 
 void SPIFFSInit(){
   if(!SPIFFS.begin(true)){
@@ -127,8 +302,9 @@ void i2s_adc_data_scale(uint8_t * d_buff, uint8_t* s_buff, uint32_t len)
     }
 }
 
-void i2s_adc(void *arg)
+void i2s_adc()
 {
+    SPIFFSInit();
     byte header[headerSize];
     wavHeader(header, FLASH_RECORD_SIZE);
 
@@ -140,9 +316,6 @@ void i2s_adc(void *arg)
     char* i2s_read_buff = (char*) calloc(i2s_read_len, sizeof(char));
     uint8_t* flash_write_buff = (uint8_t*) calloc(i2s_read_len, sizeof(char));
 
-    // i2s_read(I2S_PORT, (void*) i2s_read_buff, i2s_read_len, &bytes_read, portMAX_DELAY);
-    // i2s_read(I2S_PORT, (void*) i2s_read_buff, i2s_read_len, &bytes_read, portMAX_DELAY);
-    
     Serial.println(" *** Recording Start *** ");
     while (flash_wr_size < FLASH_RECORD_SIZE) {
         //read data from I2S bus, in this case, from ADC.
@@ -151,7 +324,7 @@ void i2s_adc(void *arg)
         //example_disp_buf((uint8_t*) i2s_read_buff, 64);
 
         //save original data from I2S(ADC) into flash.
-        i2s_adc_data_scale(flash_write_buff, (uint8_t*)i2s_read_buff, i2s_read_len);
+        // i2s_adc_data_scale(flash_write_buff, (uint8_t*)i2s_read_buff, i2s_read_len);
         file.write((const byte*) flash_write_buff, i2s_read_len);
         flash_wr_size += i2s_read_len;
         ets_printf("Sound recording %u%%\n", flash_wr_size * 100 / FLASH_RECORD_SIZE);
@@ -166,7 +339,9 @@ void i2s_adc(void *arg)
     
     listSPIFFS();
     recording_available = true;
-    vTaskDelete(NULL);
+    //print_file();
+    send_geoposition_and_audio();
+    //vTaskDelete(NULL);
     //recording_available = true;
 }
 

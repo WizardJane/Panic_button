@@ -1,5 +1,7 @@
 #include <driver/i2s.h>
 #include <SPIFFS.h>
+#include <WiFi.h>
+#include <PubSubClient.h>
 
 #define I2S_WS 25
 #define I2S_SD 33
@@ -10,7 +12,7 @@
 #define I2S_PORT I2S_NUM_0
 #define I2S_SAMPLE_RATE   (16000)
 #define I2S_SAMPLE_BITS   (16)
-#define I2S_READ_LEN      (16 * 1024)
+#define I2S_READ_LEN      (1 * 1024)
 #define RECORD_TIME       (20) //Seconds
 #define I2S_CHANNEL_NUM   (1)
 #define FLASH_RECORD_SIZE (I2S_CHANNEL_NUM * I2S_SAMPLE_RATE * I2S_SAMPLE_BITS / 8 * RECORD_TIME)
@@ -19,21 +21,131 @@ File file;
 const char filename[] = "/recording.wav";
 const int headerSize = 44;
 
+const int buttonPin = 21;  // the number of the pushbutton pin
+const int ledPin = 2;    // the number of the LED pin
+int buttonState = 0; 
+bool recording_available = true; //можно ли начать запись
+bool sending_available = false; 
+
+const char* ssid = "Android";
+const char* password = "sirius123";
+const char* mqtt_server = "10.127.251.120";
+const char* mqttUsr = "miptfab";
+const char* mqttPass = "miptfab2025";
+
+WiFiClient espClient; 
+PubSubClient client(espClient);
+long lastMsg = 0;
+char msg[50];
+int value = 0;
+String inmsg = "";
+String geoposition = "179.179 179.179";
 
 
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
-  SPIFFSInit();
   i2sInit();
-  xTaskCreate(i2s_adc, "i2s_adc", 1024 * 2, NULL, 1, NULL);
+  pinMode(ledPin, OUTPUT);
+  pinMode(buttonPin, INPUT);
+  //record_audio();
 
-
+  setup_wifi();
+  client.setServer(mqtt_server, 1883);
+  //client.setCallback(callback);
+  // digitalWrite(BUILTIN_LED, HIGH);
+  // delay(3000);
+  // digitalWrite(BUILTIN_LED, LOW);
+  Serial.println("setup started");
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
 
+  if (recording_available) {
+    buttonState = digitalRead(buttonPin);
+    //Serial.println(buttonState);
+    if (buttonState == HIGH) {
+      delay(1500);
+      if (buttonState == HIGH) {
+        digitalWrite(ledPin, HIGH);
+        recording_available = false;
+        sending_available = false;
+        Serial.print("recording_available ");
+        Serial.println(recording_available);
+        delay(1500);
+        digitalWrite(ledPin, LOW);
+        record_audio();
+        send_audio();
+
+
+      }
+    } 
+  }
+  if (!client.connected()) {
+    reconnect();
+    sendData("/miptfab/esp32led/ledState/", "up");
+  }
+  client.loop();
+
+}
+
+void send_audio() {
+  while (!sending_available) delay(500);
+  sendData("/miptfab/esp32led/geoposition/", geoposition);
+  sendData("/miptfab/esp32led/audio/", "start");
+  Serial.println("sending function");
+
+
+  file = SPIFFS.open(filename, "r");
+  if(!file){
+    Serial.println("File is not available!");
+  }
+
+  int cnt = 0;
+  unsigned int len1 = 44;
+  byte audio_1[len1];
+  unsigned int len2 = 40;
+  byte audio_2[len2];
+
+  while (file.available() && cnt < len1) {
+      byte b = file.read();
+      audio_1[cnt] = b;
+      cnt++;
+    }
+  sendData_byte("/miptfab/esp32led/audio/", audio_1, len1);
+  Serial.print("sent");
+  Serial.println(cnt);
+  file.close();
+
+  file = SPIFFS.open(filename, "r");
+  if (!file) {
+    Serial.println("File is not available!");
+  }
+  while (file.available()) {
+    //Serial.print(1);
+    for (int i = 0; i < len2; i++) {
+      byte b = file.read();
+      audio_2[i] = b;
+      //Serial.print(b, HEX);
+      cnt++;
+    }
+    sendData_byte("/miptfab/esp32led/audio/", audio_2, len2);
+    
+  }
+  
+  Serial.print("sent");
+  Serial.println(cnt);
+
+  file.close();
+  Serial.println("read");
+  sendData("/miptfab/esp32led/audio/", "finish");
+
+  recording_available = true;
+}
+
+void record_audio() {
+  SPIFFSInit();
+  xTaskCreate(i2s_adc, "i2s_adc", 1024 * 3, NULL, 1, NULL);
 }
 
 void SPIFFSInit(){
@@ -52,6 +164,7 @@ void SPIFFSInit(){
   wavHeader(header, FLASH_RECORD_SIZE);
 
   file.write(header, headerSize);
+  Serial.print("header:");
   for (int i = 0; i < headerSize; i++) {
     Serial.print(header[i], HEX);
   }
@@ -103,7 +216,7 @@ void i2s_adc(void *arg)
     size_t bytes_read;
 
     char* i2s_read_buff = (char*) calloc(i2s_read_len, sizeof(char));
-    uint8_t* flash_write_buff = (uint8_t*) calloc(i2s_read_len, sizeof(char));
+    //uint8_t* flash_write_buff = (uint8_t*) calloc(i2s_read_len, sizeof(char));
     
     Serial.println(" *** Recording Start *** ");
     while (flash_wr_size < FLASH_RECORD_SIZE) {
@@ -111,8 +224,8 @@ void i2s_adc(void *arg)
         i2s_read(I2S_PORT, (void*) i2s_read_buff, i2s_read_len, &bytes_read, portMAX_DELAY);
         //example_disp_buf((uint8_t*) i2s_read_buff, 64);
         //save original data from I2S(ADC) into flash.
-        i2s_adc_data_scale(flash_write_buff, (uint8_t*)i2s_read_buff, i2s_read_len);
-        file.write((const byte*) flash_write_buff, i2s_read_len);
+        //i2s_adc_data_scale(flash_write_buff, (uint8_t*)i2s_read_buff, i2s_read_len);
+        file.write((const byte*) i2s_read_buff, i2s_read_len);
         // for (int i = 0; i < i2s_read_len; i++) {
         //   Serial.print(flash_write_buff[i], HEX);
         // }
@@ -124,24 +237,14 @@ void i2s_adc(void *arg)
 
     free(i2s_read_buff);
     i2s_read_buff = NULL;
-    free(flash_write_buff);
-    flash_write_buff = NULL;
-    
+    // free(flash_write_buff);
+    // flash_write_buff = NULL;
+    sending_available = true;
     listSPIFFS();
     vTaskDelete(NULL);
 }
 
-void example_disp_buf(uint8_t* buf, int length)
-{
-    printf("======\n");
-    for (int i = 0; i < length; i++) {
-        printf("%02x ", buf[i]);
-        if ((i + 1) % 8 == 0) {
-            printf("\n");
-        }
-    }
-    printf("======\n");
-}
+
 
 void wavHeader(byte* header, int wavSize){
   header[0] = 'R';
@@ -240,3 +343,81 @@ void listSPIFFS(void) {
   delay(1000);
 
 }
+
+void setup_wifi() {
+  delay(10);
+  Serial.println();
+  Serial.print("Connecting to ");
+  Serial.println(ssid);
+
+  WiFi.begin(ssid, password);
+  while (WiFi.status() != WL_CONNECTED) {
+    delay(500);
+    Serial.print(".");
+  }
+
+  Serial.println("");
+  Serial.println("WiFi connected");
+  Serial.println("IP address: ");
+  Serial.println(WiFi.localIP());
+}
+
+void reconnect() {
+  while (!client.connected()) {
+    Serial.print("Attempting MQTT connection...");
+    String clientId = "esp32testClient-";
+    clientId += String(random(0xffff), HEX);
+    // пытаемся подключиться к брокеру MQTT
+    if (client.connect(clientId.c_str(), mqttUsr, mqttPass)) {
+      Serial.println("connected");
+      // Как только подключились, сообщаем эту прекрасную весть...
+      client.publish("/miptfab/esp32led/ledState/", "connected");
+      // ... ну и переподписываемся на нужный топик
+      client.subscribe("/miptfab/esp32led/ledControl/");
+      // client.subscribe("/miptfab/esp32led/audio/");
+      // client.subscribe("/miptfab/esp32led/geoposition/");
+
+    } else {
+      Serial.print("failed, rc=");
+      Serial.print(client.state());
+      Serial.println(" try again in 5 seconds");
+      // Ждём 5 секунд перед следующей попыткой подключиться к брокеру MQTT
+      delay(5000);
+    }
+  }
+}
+
+bool connectionUp(String paramOne) {
+  String msgj = paramOne;
+  if (!client.connected()) {
+    reconnect();
+  } else {
+    client.publish("/miptfab/esp32led/ledState/", msgj.c_str());
+
+     Serial.println(msgj.c_str());
+  }
+  return true;
+}
+
+bool sendData(String topic, String data) {
+  // String msgj = paramOne;
+  while (!client.connected()) {
+    reconnect();
+  }
+  client.publish(topic.c_str(), data.c_str());
+//     Serial.println(topic + " " + data);
+  
+  return true;
+}
+
+bool sendData_byte(String topic, uint8_t* data, unsigned int plenght) {
+  // String msgj = paramOne;
+  while (!client.connected()) {
+    reconnect();
+  }
+  client.publish(topic.c_str(), data, plenght);
+//     Serial.println(topic + " " + data);
+  
+  return true;
+}
+

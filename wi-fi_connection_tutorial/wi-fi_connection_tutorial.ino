@@ -39,9 +39,9 @@ void setup_wifi() {
 
 void callback(char* topic, byte* payload, unsigned int length) {
   inmsg = "";
-  // Serial.print("Message arrived [");
-  // Serial.print(topic);
-  // Serial.print("] ");
+  Serial.print("Message arrived [");
+  Serial.print(topic);
+  Serial.print("] ");
   for (int i = 0; i < length; i++) {
     inmsg += (char)payload[i];
     // Serial.print((char)payload[i]);
