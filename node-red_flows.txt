@@ -1,0 +1,1627 @@
+[
+    {
+        "id": "f6f2187d.f17ca8",
+        "type": "tab",
+        "label": "Flow 1",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "f5fd44df10f2c938",
+        "type": "tab",
+        "label": "Поток 1",
+        "disabled": true,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "c955d0af8ee47aac",
+        "type": "tab",
+        "label": "Поток 2",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "7caa2451b5613dc3",
+        "type": "tab",
+        "label": "final",
+        "disabled": false,
+        "info": "",
+        "env": []
+    },
+    {
+        "id": "1f5fbb5c850af2c1",
+        "type": "mqtt-broker",
+        "name": "miptfab",
+        "broker": "10.54.254.120:1883",
+        "port": 1883,
+        "clientid": "",
+        "autoConnect": true,
+        "usetls": false,
+        "protocolVersion": 4,
+        "keepalive": 60,
+        "cleansession": true,
+        "autoUnsubscribe": true,
+        "birthTopic": "",
+        "birthQos": "0",
+        "birthRetain": "false",
+        "birthPayload": "",
+        "birthMsg": {},
+        "closeTopic": "",
+        "closeQos": "0",
+        "closeRetain": "false",
+        "closePayload": "",
+        "closeMsg": {},
+        "willTopic": "",
+        "willQos": "0",
+        "willRetain": "false",
+        "willPayload": "",
+        "willMsg": {},
+        "userProps": "",
+        "sessionExpiry": ""
+    },
+    {
+        "id": "49673c0a12e9df11",
+        "type": "ui-base",
+        "name": "My Dashboard",
+        "path": "/dashboard",
+        "appIcon": "",
+        "includeClientData": true,
+        "acceptsClientConfig": [
+            "ui-notification",
+            "ui-control"
+        ],
+        "showPathInSidebar": false,
+        "headerContent": "page",
+        "navigationStyle": "default",
+        "titleBarStyle": "default",
+        "showReconnectNotification": true,
+        "notificationDisplayTime": 1,
+        "showDisconnectNotification": true,
+        "allowInstall": false
+    },
+    {
+        "id": "58741277f78b16ed",
+        "type": "ui-theme",
+        "name": "Default Theme",
+        "colors": {
+            "surface": "#ffffff",
+            "primary": "#0094CE",
+            "bgPage": "#eeeeee",
+            "groupBg": "#ffffff",
+            "groupOutline": "#cccccc"
+        },
+        "sizes": {
+            "density": "default",
+            "pagePadding": "12px",
+            "groupGap": "12px",
+            "groupBorderRadius": "4px",
+            "widgetGap": "12px"
+        }
+    },
+    {
+        "id": "8c254f104c0cc121",
+        "type": "ui-page",
+        "name": "Page 1",
+        "ui": "49673c0a12e9df11",
+        "path": "/page1",
+        "icon": "home",
+        "layout": "grid",
+        "theme": "58741277f78b16ed",
+        "breakpoints": [
+            {
+                "name": "Default",
+                "px": 0,
+                "cols": 3
+            },
+            {
+                "name": "Tablet",
+                "px": 576,
+                "cols": 6
+            },
+            {
+                "name": "Small Desktop",
+                "px": 768,
+                "cols": 9
+            },
+            {
+                "name": "Desktop",
+                "px": 1024,
+                "cols": 12
+            }
+        ],
+        "order": 1,
+        "className": "",
+        "visible": "true",
+        "disabled": "false"
+    },
+    {
+        "id": "b0666904524acef2",
+        "type": "ui-group",
+        "name": "Group 1",
+        "page": "8c254f104c0cc121",
+        "width": 6,
+        "height": 1,
+        "order": 1,
+        "showTitle": true,
+        "className": "",
+        "visible": "true",
+        "disabled": "false",
+        "groupType": "default"
+    },
+    {
+        "id": "19b33aa63432cc57",
+        "type": "telegram bot",
+        "botname": "PanicButton_406_bot",
+        "usernames": "",
+        "chatids": "",
+        "baseapiurl": "",
+        "testenvironment": false,
+        "updatemode": "polling",
+        "pollinterval": "1000",
+        "usesocks": false,
+        "sockshost": "",
+        "socksprotocol": "socks5",
+        "socksport": 6667,
+        "socksusername": "anonymous",
+        "sockspassword": "",
+        "bothost": "",
+        "botpath": "",
+        "localbothost": "0.0.0.0",
+        "localbotport": 8443,
+        "publicbotport": 8443,
+        "privatekey": "",
+        "certificate": "",
+        "useselfsignedcertificate": false,
+        "sslterminated": false,
+        "verboselogging": false
+    },
+    {
+        "id": "3cc11d24.ff01a2",
+        "type": "comment",
+        "z": "f6f2187d.f17ca8",
+        "name": "WARNING: please check you have started this container with a volume that is mounted to /data\\n otherwise any flow changes are lost when you redeploy or upgrade the container\\n (e.g. upgrade to a more recent node-red docker image).\\n  If you are using named volumes you can ignore this warning.\\n Double click or see info side panel to learn how to start Node-RED in Docker to save your work",
+        "info": "\nTo start docker with a bind mount volume (-v option), for example:\n\n```\ndocker run -it -p 1880:1880 -v /home/user/node_red_data:/data --name mynodered nodered/node-red\n```\n\nwhere `/home/user/node_red_data` is a directory on your host machine where you want to store your flows.\n\nIf you do not do this then you can experiment and redploy flows, but if you restart or upgrade the container the flows will be disconnected and lost. \n\nThey will still exist in a hidden data volume, which can be recovered using standard docker techniques, but that is much more complex than just starting with a named volume as described above.",
+        "x": 350,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "4c7c913dfd4cdd12",
+        "type": "mqtt in",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "topic": "/miptfab/esp32led/ledState/",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "1f5fbb5c850af2c1",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 240,
+        "y": 200,
+        "wires": [
+            [
+                "6568d5feaf78ed0f"
+            ]
+        ]
+    },
+    {
+        "id": "64b0f510cbb4c48b",
+        "type": "mqtt out",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "topic": "/miptfab/esp32led/ledControl/",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "1f5fbb5c850af2c1",
+        "x": 570,
+        "y": 260,
+        "wires": []
+    },
+    {
+        "id": "6568d5feaf78ed0f",
+        "type": "debug",
+        "z": "f6f2187d.f17ca8",
+        "name": "debug 1",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 600,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "b520be6c67f5cabd",
+        "type": "ui-button",
+        "z": "f6f2187d.f17ca8",
+        "group": "b0666904524acef2",
+        "name": "Включить",
+        "label": "button",
+        "order": 2,
+        "width": 0,
+        "height": 0,
+        "emulateClick": false,
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "iconPosition": "left",
+        "payload": "on",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "buttonColor": "",
+        "textColor": "",
+        "iconColor": "",
+        "enableClick": true,
+        "enablePointerdown": false,
+        "pointerdownPayload": "",
+        "pointerdownPayloadType": "str",
+        "enablePointerup": false,
+        "pointerupPayload": "",
+        "pointerupPayloadType": "str",
+        "x": 270,
+        "y": 260,
+        "wires": [
+            [
+                "64b0f510cbb4c48b",
+                "ab3fdf64740fb4a0"
+            ]
+        ]
+    },
+    {
+        "id": "485fd43857622f66",
+        "type": "ui-button",
+        "z": "f6f2187d.f17ca8",
+        "group": "b0666904524acef2",
+        "name": "Выключить",
+        "label": "button",
+        "order": 1,
+        "width": 0,
+        "height": 0,
+        "emulateClick": false,
+        "tooltip": "",
+        "color": "",
+        "bgcolor": "",
+        "className": "",
+        "icon": "",
+        "iconPosition": "left",
+        "payload": "off",
+        "payloadType": "str",
+        "topic": "topic",
+        "topicType": "msg",
+        "buttonColor": "",
+        "textColor": "",
+        "iconColor": "",
+        "enableClick": true,
+        "enablePointerdown": false,
+        "pointerdownPayload": "",
+        "pointerdownPayloadType": "str",
+        "enablePointerup": false,
+        "pointerupPayload": "",
+        "pointerupPayloadType": "str",
+        "x": 270,
+        "y": 340,
+        "wires": [
+            [
+                "64b0f510cbb4c48b",
+                "ab3fdf64740fb4a0"
+            ]
+        ]
+    },
+    {
+        "id": "095ac350ae5caae4",
+        "type": "mqtt out",
+        "z": "f6f2187d.f17ca8",
+        "name": "",
+        "topic": "/miptfab/esp32led/ledControl/",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "1f5fbb5c850af2c1",
+        "x": 570,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "ab3fdf64740fb4a0",
+        "type": "debug",
+        "z": "f6f2187d.f17ca8",
+        "name": "debug 10",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 520,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "5c79184654d8a92f",
+        "type": "debug",
+        "z": "f5fd44df10f2c938",
+        "name": "debug 2",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 400,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "37071f8479539fec",
+        "type": "inject",
+        "z": "f5fd44df10f2c938",
+        "name": "start/end",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "message",
+                "v": "start",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "start/end",
+        "payloadType": "str",
+        "x": 140,
+        "y": 220,
+        "wires": [
+            [
+                "5c79184654d8a92f",
+                "ac05d9a6a4f3f347"
+            ]
+        ]
+    },
+    {
+        "id": "90330323bc767d7d",
+        "type": "inject",
+        "z": "f5fd44df10f2c938",
+        "name": "string",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "string",
+                "v": "asdjfhlqsjdgflajsghdfkjhgdk",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "string",
+        "payloadType": "str",
+        "x": 150,
+        "y": 340,
+        "wires": [
+            [
+                "5c79184654d8a92f",
+                "ac05d9a6a4f3f347"
+            ]
+        ]
+    },
+    {
+        "id": "ac05d9a6a4f3f347",
+        "type": "switch",
+        "z": "f5fd44df10f2c938",
+        "name": "type of data",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "geoposition",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "start/end",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "string",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 410,
+        "y": 240,
+        "wires": [
+            [
+                "d05f07165ed44697"
+            ],
+            [
+                "14286fbf30da8e5d"
+            ],
+            [
+                "eea0f1e8926efcbc"
+            ]
+        ]
+    },
+    {
+        "id": "eea0f1e8926efcbc",
+        "type": "file",
+        "z": "f5fd44df10f2c938",
+        "name": "",
+        "filename": "/newdata/newmessage.wav",
+        "filenameType": "str",
+        "appendNewline": false,
+        "createDir": true,
+        "overwriteFile": "false",
+        "encoding": "hex",
+        "x": 760,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d05f07165ed44697",
+        "type": "debug",
+        "z": "f5fd44df10f2c938",
+        "name": "send_geoposition",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 680,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "d9146a4ef8ce9418",
+        "type": "inject",
+        "z": "f5fd44df10f2c938",
+        "name": "start/end",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "message",
+                "v": "end",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "start/end",
+        "payloadType": "str",
+        "x": 140,
+        "y": 280,
+        "wires": [
+            [
+                "ac05d9a6a4f3f347"
+            ]
+        ]
+    },
+    {
+        "id": "14286fbf30da8e5d",
+        "type": "switch",
+        "z": "f5fd44df10f2c938",
+        "name": "start or end?",
+        "property": "message",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "start",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "end",
+                "vt": "str"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 2,
+        "x": 630,
+        "y": 340,
+        "wires": [
+            [
+                "b4493c08ec5b9864"
+            ],
+            [
+                "0fc566bf89a6341c"
+            ]
+        ]
+    },
+    {
+        "id": "0fc566bf89a6341c",
+        "type": "debug",
+        "z": "f5fd44df10f2c938",
+        "name": "send audio",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 830,
+        "y": 400,
+        "wires": []
+    },
+    {
+        "id": "b4493c08ec5b9864",
+        "type": "debug",
+        "z": "f5fd44df10f2c938",
+        "name": "start recording",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 830,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "f397967680c336f2",
+        "type": "mqtt in",
+        "z": "f5fd44df10f2c938",
+        "name": "",
+        "topic": "/miptfab/esp32led/audio/",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "1f5fbb5c850af2c1",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 150,
+        "y": 700,
+        "wires": [
+            [
+                "940a34c7cb4f3bba",
+                "720268d75d96799a",
+                "c72d9d03a97b1f2e"
+            ]
+        ]
+    },
+    {
+        "id": "310b5372290c207b",
+        "type": "mqtt in",
+        "z": "f5fd44df10f2c938",
+        "name": "",
+        "topic": "/miptfab/esp32led/geoposition/",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "1f5fbb5c850af2c1",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 170,
+        "y": 860,
+        "wires": [
+            [
+                "cd5c18f8aeacf30d",
+                "a86b14a6bee32a80"
+            ]
+        ]
+    },
+    {
+        "id": "a281b4d7d02b2714",
+        "type": "inject",
+        "z": "f5fd44df10f2c938",
+        "name": "geoposition",
+        "props": [
+            {
+                "p": "coordinates",
+                "v": "782347653.000 9283482734.1222",
+                "vt": "str"
+            },
+            {
+                "p": "payload"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "geoposition",
+        "payloadType": "str",
+        "x": 150,
+        "y": 160,
+        "wires": [
+            [
+                "5c79184654d8a92f",
+                "ac05d9a6a4f3f347"
+            ]
+        ]
+    },
+    {
+        "id": "c72d9d03a97b1f2e",
+        "type": "file",
+        "z": "f5fd44df10f2c938",
+        "name": "",
+        "filename": "/data/message.wav",
+        "filenameType": "str",
+        "appendNewline": false,
+        "createDir": true,
+        "overwriteFile": "false",
+        "encoding": "none",
+        "x": 910,
+        "y": 700,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "940a34c7cb4f3bba",
+        "type": "switch",
+        "z": "f5fd44df10f2c938",
+        "name": "start or finish?",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "start",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "finish",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 420,
+        "y": 580,
+        "wires": [
+            [
+                "6d5c1775333f25e3",
+                "21266c5d0dfe083d"
+            ],
+            [
+                "0b089af49f69489b",
+                "26f00454a8ca628f"
+            ],
+            [
+                "8f0bb643a778ddc1"
+            ]
+        ]
+    },
+    {
+        "id": "cd5c18f8aeacf30d",
+        "type": "debug",
+        "z": "f5fd44df10f2c938",
+        "name": "send_geoposition",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 870,
+        "y": 860,
+        "wires": []
+    },
+    {
+        "id": "6d5c1775333f25e3",
+        "type": "debug",
+        "z": "f5fd44df10f2c938",
+        "name": "debug 3",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 740,
+        "y": 500,
+        "wires": []
+    },
+    {
+        "id": "0b089af49f69489b",
+        "type": "debug",
+        "z": "f5fd44df10f2c938",
+        "name": "debug 4",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 740,
+        "y": 540,
+        "wires": []
+    },
+    {
+        "id": "e6672be73ff46e17",
+        "type": "file",
+        "z": "f5fd44df10f2c938",
+        "name": "end.txt",
+        "filename": "miptfab@newmiptfablinuxmachine:/home/miptfab/node_red_data/end.txt",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "false",
+        "encoding": "utf8",
+        "x": 1100,
+        "y": 360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "03f6a3938e6b9b15",
+        "type": "file",
+        "z": "f5fd44df10f2c938",
+        "name": "start.txt",
+        "filename": "miptfab@newmiptfablinuxmachine:/home/miptfab/node_red_data/start.txt",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": true,
+        "overwriteFile": "false",
+        "encoding": "utf8",
+        "x": 1260,
+        "y": 440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "762949d44d00ecd0",
+        "type": "telegram sender",
+        "z": "f5fd44df10f2c938",
+        "name": "",
+        "bot": "19b33aa63432cc57",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 940,
+        "y": 940,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "a82406c76bcafa7d",
+        "type": "inject",
+        "z": "f5fd44df10f2c938",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "{\"chatId\":\"959441824\",\"type\":\"message\",\"content\":\"This will be handled by the second output of the sender node.\"}",
+        "payloadType": "json",
+        "x": 140,
+        "y": 980,
+        "wires": [
+            [
+                "74c150a15282cff1"
+            ]
+        ]
+    },
+    {
+        "id": "a86b14a6bee32a80",
+        "type": "function",
+        "z": "f5fd44df10f2c938",
+        "name": "test",
+        "func": "var recv = msg.payload;\nvar id = \"959441824\";\nvar check = \"test\"\nmsg.payload = { \"chatId\": \"959441824\", \"type\": \"message\", \"content\": recv } \nreturn msg;\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 550,
+        "y": 920,
+        "wires": [
+            [
+                "762949d44d00ecd0"
+            ]
+        ]
+    },
+    {
+        "id": "74c150a15282cff1",
+        "type": "debug",
+        "z": "f5fd44df10f2c938",
+        "name": "debug 7",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 540,
+        "y": 1180,
+        "wires": []
+    },
+    {
+        "id": "8f0bb643a778ddc1",
+        "type": "function",
+        "z": "f5fd44df10f2c938",
+        "name": "function 1",
+        "func": "var recv = msg.payload;\nmsg = { \"payload\": recv };\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 480,
+        "y": 760,
+        "wires": [
+            [
+                "8d083b96c6b2052d",
+                "c72d9d03a97b1f2e"
+            ]
+        ]
+    },
+    {
+        "id": "8d083b96c6b2052d",
+        "type": "debug",
+        "z": "f5fd44df10f2c938",
+        "name": "debug 8",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 680,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "720268d75d96799a",
+        "type": "debug",
+        "z": "f5fd44df10f2c938",
+        "name": "get message",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 450,
+        "y": 460,
+        "wires": []
+    },
+    {
+        "id": "21266c5d0dfe083d",
+        "type": "file",
+        "z": "f5fd44df10f2c938",
+        "name": "delete",
+        "filename": "/newdata/newmessage.wav",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "delete",
+        "encoding": "none",
+        "x": 730,
+        "y": 460,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e86789909658b3e3",
+        "type": "telegram sender",
+        "z": "f5fd44df10f2c938",
+        "name": "",
+        "bot": "19b33aa63432cc57",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 1220,
+        "y": 560,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "26f00454a8ca628f",
+        "type": "function",
+        "z": "f5fd44df10f2c938",
+        "name": "test",
+        "func": "var id = \"959441824\";\nvar check = \"test\"\nmsg.payload = { \"chatId\": \"959441824\", \"type\": \"document\", \"content\": \"/newdata/newmessage.wav\"}; \nreturn msg;\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 910,
+        "y": 620,
+        "wires": [
+            [
+                "e86789909658b3e3"
+            ]
+        ]
+    },
+    {
+        "id": "fdb1c302365b2f59",
+        "type": "file",
+        "z": "f5fd44df10f2c938",
+        "name": "",
+        "filename": "/data/message.wav",
+        "filenameType": "str",
+        "appendNewline": false,
+        "createDir": true,
+        "overwriteFile": "false",
+        "encoding": "hex",
+        "x": 770,
+        "y": 660,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "ae671e41bcd01bb7",
+        "type": "telegram receiver",
+        "z": "c955d0af8ee47aac",
+        "name": "",
+        "bot": "19b33aa63432cc57",
+        "saveDataDir": "",
+        "filterCommands": false,
+        "hasinput": false,
+        "inputs": 0,
+        "handleallupdates": false,
+        "x": 240,
+        "y": 220,
+        "wires": [
+            [
+                "b493e675c6052f27",
+                "3fe39563d91bc008"
+            ],
+            []
+        ]
+    },
+    {
+        "id": "3fe39563d91bc008",
+        "type": "telegram sender",
+        "z": "c955d0af8ee47aac",
+        "name": "",
+        "bot": "19b33aa63432cc57",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 680,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "b493e675c6052f27",
+        "type": "debug",
+        "z": "c955d0af8ee47aac",
+        "name": "debug 6",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 500,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "fbcbaf0f.1a4c3",
+        "type": "catch",
+        "z": "c955d0af8ee47aac",
+        "name": "",
+        "scope": null,
+        "uncaught": false,
+        "x": 190,
+        "y": 340,
+        "wires": [
+            [
+                "dab98e0e.f83fb"
+            ]
+        ]
+    },
+    {
+        "id": "dab98e0e.f83fb",
+        "type": "debug",
+        "z": "c955d0af8ee47aac",
+        "name": "",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 370,
+        "y": 340,
+        "wires": []
+    },
+    {
+        "id": "6a07e213.40bd6c",
+        "type": "comment",
+        "z": "c955d0af8ee47aac",
+        "name": "Example 1: errors are handled in \"catch all\"",
+        "info": "",
+        "x": 290,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "7cd0d3d1dfdcce95",
+        "type": "mqtt in",
+        "z": "7caa2451b5613dc3",
+        "name": "",
+        "topic": "/miptfab/esp32led/audio/",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "1f5fbb5c850af2c1",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 130,
+        "y": 360,
+        "wires": [
+            [
+                "b4a644d5cadee5e7",
+                "042ed19c2d05195f"
+            ]
+        ]
+    },
+    {
+        "id": "b4a644d5cadee5e7",
+        "type": "switch",
+        "z": "7caa2451b5613dc3",
+        "name": "start or finish?",
+        "property": "payload",
+        "propertyType": "msg",
+        "rules": [
+            {
+                "t": "eq",
+                "v": "start",
+                "vt": "str"
+            },
+            {
+                "t": "eq",
+                "v": "finish",
+                "vt": "str"
+            },
+            {
+                "t": "else"
+            }
+        ],
+        "checkall": "true",
+        "repair": false,
+        "outputs": 3,
+        "x": 400,
+        "y": 240,
+        "wires": [
+            [
+                "859c9b00ac91240b",
+                "bafc103e56c0eacb"
+            ],
+            [
+                "c57029849e81c7a7",
+                "dcb1edc590dc3faa"
+            ],
+            [
+                "966b8345b8e4cb5f"
+            ]
+        ]
+    },
+    {
+        "id": "042ed19c2d05195f",
+        "type": "debug",
+        "z": "7caa2451b5613dc3",
+        "name": "get message",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 430,
+        "y": 120,
+        "wires": []
+    },
+    {
+        "id": "f168965768446b30",
+        "type": "file",
+        "z": "7caa2451b5613dc3",
+        "name": "",
+        "filename": "/data/message.wav",
+        "filenameType": "str",
+        "appendNewline": false,
+        "createDir": true,
+        "overwriteFile": "false",
+        "encoding": "none",
+        "x": 730,
+        "y": 360,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "859c9b00ac91240b",
+        "type": "debug",
+        "z": "7caa2451b5613dc3",
+        "name": "debug 5",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "payload",
+        "targetType": "msg",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 720,
+        "y": 160,
+        "wires": []
+    },
+    {
+        "id": "bafc103e56c0eacb",
+        "type": "file",
+        "z": "7caa2451b5613dc3",
+        "name": "delete",
+        "filename": "/data/message.wav",
+        "filenameType": "str",
+        "appendNewline": true,
+        "createDir": false,
+        "overwriteFile": "delete",
+        "encoding": "none",
+        "x": 1810,
+        "y": 140,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c57029849e81c7a7",
+        "type": "debug",
+        "z": "7caa2451b5613dc3",
+        "name": "debug 6",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 720,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "58c3f332383bd8e6",
+        "type": "function",
+        "z": "7caa2451b5613dc3",
+        "name": "Кате",
+        "func": "var id = \"959441824\";\nvar check = \"test\"\nmsg.payload = { \"chatId\": \"959441824\", \"type\": \"document\", \"content\": \"/data/message.wav\"}; \nreturn msg;\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 990,
+        "y": 300,
+        "wires": [
+            [
+                "e1f811111557dd24"
+            ]
+        ]
+    },
+    {
+        "id": "966b8345b8e4cb5f",
+        "type": "function",
+        "z": "7caa2451b5613dc3",
+        "name": "запись",
+        "func": "var recv = msg.payload;\nmsg = { \"payload\": recv };\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 500,
+        "y": 380,
+        "wires": [
+            [
+                "d5bb38cee0a1c0cd",
+                "f168965768446b30"
+            ]
+        ]
+    },
+    {
+        "id": "e1f811111557dd24",
+        "type": "telegram sender",
+        "z": "7caa2451b5613dc3",
+        "name": "",
+        "bot": "19b33aa63432cc57",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 1200,
+        "y": 300,
+        "wires": [
+            [
+                "0c871274980a08ca"
+            ]
+        ]
+    },
+    {
+        "id": "d5bb38cee0a1c0cd",
+        "type": "debug",
+        "z": "7caa2451b5613dc3",
+        "name": "debug 7",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 740,
+        "y": 440,
+        "wires": []
+    },
+    {
+        "id": "792f2cd7f2db8f68",
+        "type": "debug",
+        "z": "7caa2451b5613dc3",
+        "name": "send_geoposition",
+        "active": false,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "true",
+        "targetType": "full",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 850,
+        "y": 620,
+        "wires": []
+    },
+    {
+        "id": "5ce05cec9406369e",
+        "type": "mqtt in",
+        "z": "7caa2451b5613dc3",
+        "name": "",
+        "topic": "/miptfab/esp32led/geoposition/",
+        "qos": "2",
+        "datatype": "auto-detect",
+        "broker": "1f5fbb5c850af2c1",
+        "nl": false,
+        "rap": true,
+        "rh": 0,
+        "inputs": 0,
+        "x": 150,
+        "y": 620,
+        "wires": [
+            [
+                "792f2cd7f2db8f68",
+                "d8a3da3cb50de4e8",
+                "d64263aeaddc06bb"
+            ]
+        ]
+    },
+    {
+        "id": "d8a3da3cb50de4e8",
+        "type": "function",
+        "z": "7caa2451b5613dc3",
+        "name": "Геопозиция Кате",
+        "func": "var recv = msg.payload;\nvar id = \"959441824\";\nvar check = \"test\"\nmsg.payload = { \"chatId\": \"959441824\", \"type\": \"message\", \"content\": recv } \nreturn msg;\n",
+        "outputs": 1,
+        "timeout": "",
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 570,
+        "y": 680,
+        "wires": [
+            [
+                "7295c9f64ad2485c"
+            ]
+        ]
+    },
+    {
+        "id": "7295c9f64ad2485c",
+        "type": "telegram sender",
+        "z": "7caa2451b5613dc3",
+        "name": "",
+        "bot": "19b33aa63432cc57",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 920,
+        "y": 700,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "0c871274980a08ca",
+        "type": "function",
+        "z": "7caa2451b5613dc3",
+        "name": "Саше",
+        "func": "var id = \"2119884948\";\nvar check = \"test\"\nmsg.payload = { \"chatId\": \"2119884948\", \"type\": \"document\", \"content\": \"/data/message.wav\" };\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1510,
+        "y": 300,
+        "wires": [
+            [
+                "c10cd81fdf2de16c"
+            ]
+        ]
+    },
+    {
+        "id": "fddc06efa32d30fc",
+        "type": "function",
+        "z": "7caa2451b5613dc3",
+        "name": "function 4",
+        "func": "\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1360,
+        "y": 460,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c10cd81fdf2de16c",
+        "type": "telegram sender",
+        "z": "7caa2451b5613dc3",
+        "name": "",
+        "bot": "19b33aa63432cc57",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 1700,
+        "y": 300,
+        "wires": [
+            [
+                "14213fe2942a0b43",
+                "bafc103e56c0eacb"
+            ]
+        ]
+    },
+    {
+        "id": "d64263aeaddc06bb",
+        "type": "function",
+        "z": "7caa2451b5613dc3",
+        "name": "Геопозиция Саше",
+        "func": "var recv = msg.payload;\nvar id = \"2119884948\";\nvar check = \"test\"\nmsg.payload = { \"chatId\": \"2119884948\", \"type\": \"message\", \"content\": recv }\nreturn msg;\n",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 590,
+        "y": 740,
+        "wires": [
+            [
+                "4a8bad5edb74785d"
+            ]
+        ]
+    },
+    {
+        "id": "4a8bad5edb74785d",
+        "type": "telegram sender",
+        "z": "7caa2451b5613dc3",
+        "name": "",
+        "bot": "19b33aa63432cc57",
+        "haserroroutput": false,
+        "outputs": 1,
+        "x": 920,
+        "y": 760,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "dcb1edc590dc3faa",
+        "type": "delay",
+        "z": "7caa2451b5613dc3",
+        "name": "",
+        "pauseType": "delay",
+        "timeout": "3",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "1",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": false,
+        "allowrate": false,
+        "outputs": 1,
+        "x": 770,
+        "y": 300,
+        "wires": [
+            [
+                "58c3f332383bd8e6"
+            ]
+        ]
+    },
+    {
+        "id": "f80fb43de5cc4492",
+        "type": "mqtt out",
+        "z": "7caa2451b5613dc3",
+        "name": "",
+        "topic": "/miptfab/esp32led/ledControl/",
+        "qos": "",
+        "retain": "",
+        "respTopic": "",
+        "contentType": "",
+        "userProps": "",
+        "correl": "",
+        "expiry": "",
+        "broker": "1f5fbb5c850af2c1",
+        "x": 2390,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "14213fe2942a0b43",
+        "type": "function",
+        "z": "7caa2451b5613dc3",
+        "name": "function 2",
+        "func": "msg = { \"payload\": \"sent\", \"topic\": \"\"}\nreturn msg;",
+        "outputs": 1,
+        "timeout": 0,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 2040,
+        "y": 300,
+        "wires": [
+            [
+                "f80fb43de5cc4492",
+                "b5eb844b208a029f"
+            ]
+        ]
+    },
+    {
+        "id": "b5eb844b208a029f",
+        "type": "debug",
+        "z": "7caa2451b5613dc3",
+        "name": "debug 9",
+        "active": true,
+        "tosidebar": true,
+        "console": false,
+        "tostatus": false,
+        "complete": "false",
+        "statusVal": "",
+        "statusType": "auto",
+        "x": 2280,
+        "y": 80,
+        "wires": []
+    },
+    {
+        "id": "27f3302e134d9d31",
+        "type": "inject",
+        "z": "7caa2451b5613dc3",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            }
+        ],
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "x": 1960,
+        "y": 60,
+        "wires": [
+            [
+                "14213fe2942a0b43"
+            ]
+        ]
+    },
+    {
+        "id": "399e974a0021db63",
+        "type": "global-config",
+        "env": [],
+        "modules": {
+            "@flowfuse/node-red-dashboard": "1.29.0",
+            "node-red-contrib-telegrambot": "17.0.3"
+        }
+    }
+]

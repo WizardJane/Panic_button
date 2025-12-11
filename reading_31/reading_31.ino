@@ -2,6 +2,11 @@
 #include <SPIFFS.h>
 #include <WiFi.h>
 #include <PubSubClient.h>
+#include <TinyGPS++.h>
+
+
+// Создаем объект GPS
+TinyGPSPlus gps;
 
 #define I2S_WS 25
 #define I2S_SD 33
@@ -39,12 +44,13 @@ long lastMsg = 0;
 char msg[50];
 int value = 0;
 String inmsg = "";
-String geoposition = "179.179 179.179";
+String geoposition = "56.01618183 37.50458883";
 
 
 void setup() {
   // put your setup code here, to run once:
   Serial.begin(115200);
+  Serial2.begin(9600, SERIAL_8N1, 16, 17);
   i2sInit();
   pinMode(ledPin, OUTPUT);
   pinMode(buttonPin, INPUT);
@@ -52,7 +58,7 @@ void setup() {
 
   setup_wifi();
   client.setServer(mqtt_server, 1883);
-  //client.setCallback(callback);
+  client.setCallback(callback);
   // digitalWrite(BUILTIN_LED, HIGH);
   // delay(3000);
   // digitalWrite(BUILTIN_LED, LOW);
@@ -60,6 +66,15 @@ void setup() {
 }
 
 void loop() {
+    while (Serial2.available() > 0) { //while?
+    if (gps.encode(Serial2.read())) {
+      // Если есть данные
+      if (gps.location.isValid()) {
+        geoposition = String(gps.location.lat(), 8) + " " + String(gps.location.lng(), 8);
+        //delay(1000);
+      }
+    }
+  }
 
   if (recording_available) {
     buttonState = digitalRead(buttonPin);
@@ -113,8 +128,8 @@ void send_audio() {
       cnt++;
     }
   sendData_byte("/miptfab/esp32led/audio/", audio_1, len1);
-  Serial.print("sent");
-  Serial.println(cnt);
+  //Serial.print("sent");
+  //Serial.println(cnt);
   file.close();
 
   file = SPIFFS.open(filename, "r");
@@ -126,7 +141,7 @@ void send_audio() {
     for (int i = 0; i < len2; i++) {
       byte b = file.read();
       audio_2[i] = b;
-      Serial.print(b, HEX);
+      //Serial.print(b, HEX);
       cnt++;
     }
     sendData_byte("/miptfab/esp32led/audio/", audio_2, len2);
@@ -134,13 +149,13 @@ void send_audio() {
   }
   
   Serial.print("sent");
-  Serial.println(cnt);
+  //Serial.println(cnt);
 
   file.close();
   Serial.println("read");
   sendData("/miptfab/esp32led/audio/", "finish");
 
-  recording_available = true;
+  //recording_available = true;
 }
 
 void record_audio() {
@@ -422,3 +437,28 @@ bool sendData_byte(String topic, uint8_t* data, unsigned int plenght) {
   return true;
 }
 
+void callback(char* topic, byte* payload, unsigned int length) {
+  inmsg = "";
+  // Serial.print("Message arrived [");
+  // Serial.print(topic);
+  // Serial.print("] ");
+  for (int i = 0; i < length; i++) {
+    inmsg += (char)payload[i];
+    // Serial.print((char)payload[i]);
+  }
+  // Serial.println(inmsg);
+  // Serial.println("from topic: " + inmsg);
+
+  if ((String)inmsg.c_str() == "sent") {
+    recording_available = true;
+    digitalWrite(ledPin, HIGH);  // выключаем светодиод
+    delay(2000);
+    digitalWrite(ledPin, LOW);  // выключаем светодиод
+    Serial.println(inmsg.c_str());
+    sendData("/miptfab/esp32led/ledState/", "ready_to_record"); // отправляем состояние светодиода
+  } else {
+    digitalWrite(ledPin, LOW); // включаем светодиод
+    Serial.println(inmsg.c_str());
+    sendData("/miptfab/esp32led/ledState/", "OFF"); // отправляем состояние светодиода
+  }
+}
